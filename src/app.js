@@ -13,14 +13,21 @@ const search = instantsearch({
 search.addWidgets([
   instantsearch.widgets.searchBox({
     container: '#searchbox',
+    placeholder: "Seach for products..",
   }),
   instantsearch.widgets.hits({
     container: '#hits',
     templates: {
       item: `
 <article>
+  <div class="product-image"> 
+  <img
+    src={{{image}}}
+    alt={{{name}}}
+  /></div>
   <h1>{{#helpers.highlight}}{ "attribute": "name" }{{/helpers.highlight}}</h1>
   <p>{{#helpers.highlight}}{ "attribute": "description" }{{/helpers.highlight}}</p>
+  <p>{{{price}}}$</p>
 </article>
 `,
     },
@@ -28,22 +35,18 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: '#brand-list',
     attribute: 'brand',
-    sortBy(a, b) {
-      console.log(a);
-      // Seems a bit wasteful to get the data here
-      return a.count < b.count ? 1 : -1;
     },
-  }),
+  ),
+
+  instantsearch.widgets.refinementList({
+    container: '#price-range',
+    attribute: 'price_range',
+    },
+  ),
+
   instantsearch.widgets.pagination({
     container: '#pagination',
   }),
-  /*
-  instantsearch.widgets.hierarchicalMenu({
-    container: '#brand-list',
-    attributes : ['brand'],
-    sortBy: ['isRefined'],
-  }),
-  */
 ]);
 
 search.start();
